@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Escape Game</title>
+    <style>
+      #game-board {
+        width: 100%;
+        height: 100vh;
+        background-color:black;
+        position: relative;
+      }
+      #player {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        position: absolute;
+      }
+      .enemy {
+        width: 90px;
+        height: 150px;
+        background-image: url("tatsushi.png");
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="game-board">
+      <div id="player"></div>
+    </div>
+    <script>
+      const player = document.getElementById('player');
+      const gameBoard = document.getElementById('game-board');
+      let score = 0;
+
+      function movePlayer(event) {
+        player.style.left = event.clientX + 'px';
+        player.style.top = event.clientY + 'px';
+      }
+
+      gameBoard.addEventListener('mousemove', movePlayer);
+
+      function spawnEnemy() {
+        const enemy = document.createElement('div');
+        enemy.classList.add('enemy');
+        enemy.style.left = Math.random() * 100 + 'vw';
+        enemy.style.top = Math.random() * 100 + 'vh';
+        gameBoard.appendChild(enemy);
+
+        setInterval(() => {
+          const x = parseInt(enemy.style.left);
+          const y = parseInt(enemy.style.top);
+          const deltaX = x - parseInt(player.style.left);
+          const deltaY = y - parseInt(player.style.top);
+          const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+          if (distance < 50) {
+            alert('Game Over!');
+            score = 0;
+            location.reload();
+          }
+          enemy.style.left = (x - deltaX / distance * 2) + 'px';
+          enemy.style.top = (y - deltaY / distance * 2) + 'px';
+        }, 30);
+
+        setTimeout(spawnEnemy, 1000);
+      }
+
+      spawnEnemy();
+    </script>
+  </body>
+</html>
